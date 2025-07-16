@@ -1,32 +1,27 @@
-name: HyperExecute - Vasantha Kumar Boddu
+name: Playwright Hyperexecute -Vasanth
 on:
-  workflow_dispatch:
-    inputs:
-      username:
-        required: true
-        description: LT Username
-      accessKey:
-        description: LT Access Key
-        required: true
-        
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
 jobs:
-  HyperExecute:
+  test:
+    timeout-minutes: 60
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2
-
-      - name: Download CLI and Setting Environment Variables
-        shell: bash
-        run: |
-          curl https://downloads.lambdatest.com/hyperexecute/linux/hyperexecute -o hyperexecute
-          chmod +x hyperexecute
-      
-      - name: Executing the Job
-        shell: bash
-        run: |
-          ./hyperexecute --user ${{ github.event.inputs.username }} --key ${{ github.event.inputs.accessKey }} --download-artifacts --config yaml/autosplit_linux.yaml
-          echo "Test completion"
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: npx playwright test
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
