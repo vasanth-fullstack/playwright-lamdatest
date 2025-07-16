@@ -1,12 +1,12 @@
-name: HyperExecute
+name: HyperExecute - Vasantha Kumar Boddu
 on:
   workflow_dispatch:
     inputs:
       username:
         required: true
-        description: vasanthakaju5258
+        description: LT Username
       accessKey:
-        description: LT_pbKLKsdxstJuXe3csNz9SYCZBOBt1hebRYGhufkU0jzszFo
+        description: LT Access Key
         required: true
         
 jobs:
