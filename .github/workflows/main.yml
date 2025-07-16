@@ -1,0 +1,32 @@
+name: HyperExecute
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        required: true
+        description: vasanthakaju5258
+      accessKey:
+        description: LT_pbKLKsdxstJuXe3csNz9SYCZBOBt1hebRYGhufkU0jzszFo
+        required: true
+        
+jobs:
+  HyperExecute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Download CLI and Setting Environment Variables
+        shell: bash
+        run: |
+          curl https://downloads.lambdatest.com/hyperexecute/linux/hyperexecute -o hyperexecute
+          chmod +x hyperexecute
+      
+      - name: Executing the Job
+        shell: bash
+        run: |
+          ./hyperexecute --user ${{ github.event.inputs.username }} --key ${{ github.event.inputs.accessKey }} --download-artifacts --config yaml/autosplit_linux.yaml
+          echo "Test completion"
